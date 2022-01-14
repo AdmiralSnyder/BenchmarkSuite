@@ -1,3 +1,3 @@
 ﻿using BenchmarkSuite;
 
-BenchmarkRunner.Run<GetHexCharBenchmark>();
+BenchmarkRunner.Run<GetHexCharBenchmark>(true);

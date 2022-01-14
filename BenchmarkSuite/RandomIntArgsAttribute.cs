@@ -8,6 +8,8 @@ namespace BenchmarkSuite;
 [AttributeUsage(AttributeTargets.Class)]
 internal class RandomIntArgsAttribute : Attribute, IBenchmarkSetup
 {
+    private const BindingFlags FieldBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+
     public RandomIntArgsAttribute(int from, int to, string fieldName) => (From, To, FieldName) = (from, to, fieldName);
 
     public int RandSeed { get; set; } = Environment.TickCount;
@@ -17,7 +19,6 @@ internal class RandomIntArgsAttribute : Attribute, IBenchmarkSetup
     public string FieldName { get; }
 
     private Random? Rand;
-
     private FieldInfo? Field;
 
     public void IterationSetup(object instance)
@@ -29,7 +30,7 @@ internal class RandomIntArgsAttribute : Attribute, IBenchmarkSetup
     public void GlobalSetup(object instance)
     {
         Rand = new Random(RandSeed);
-        Field = instance.GetType().BaseType?.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+        Field = instance.GetType().BaseType?.GetFields(FieldBindingFlags)
             .SingleOrDefault(f => f.Name == FieldName);
     }
 }

@@ -1,21 +1,22 @@
-﻿#if DEBUG
-using BenchmarkDotNet.Configs;
+﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
-#else
 using BDNRunner = BenchmarkDotNet.Running.BenchmarkRunner;
-#endif
 
 namespace BenchmarkSuite;
 
 public class BenchmarkRunner
 {
-    public static void Run<TBenchmarkClass>()
+    public static void Run<TBenchmarkClass>(bool runInDebug = false)
     {
 #if DEBUG
-            BenchmarkSwitcher.FromAssembly(typeof(GetHexCharBenchmark).Assembly).Run(Environment.GetCommandLineArgs().Skip(1).ToArray(), new DebugInProcessConfig());
-#else
-        BDNRunner.Run<TBenchmarkClass>();
+        if (runInDebug)
+        {
+            BenchmarkSwitcher.FromAssembly(typeof(GetHexCharBenchmark).Assembly)
+                .Run(Environment.GetCommandLineArgs().Skip(1).ToArray(), new DebugInProcessConfig());
+            return;
+        }
 #endif
+        BDNRunner.Run<TBenchmarkClass>();
     }
 
 }
